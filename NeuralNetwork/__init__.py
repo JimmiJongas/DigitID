@@ -21,10 +21,11 @@ class Layer:
         raise DimentionException("Hey fucker, your matrix is the wrong size")
     else:
       print "Random initialize"
-      randomInitialize(eps)
+      self.randomInitialize()
 
   def randomInitialize(self):
-    self.theta = matrix(random.rand(numNodes, numInputs))
+    self.theta = self.eps * \
+              (matrix(random.random_sample((self.nNodes, self.nInputs))) - 0.5)
 
 
 ### Custom exception class for handling problems with architecture 
