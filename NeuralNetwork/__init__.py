@@ -1,12 +1,13 @@
 
-from numpy import matrix
+from numpy import matrix, random
 
 
 class Layer:
-  def __init__(self,numNodes,numInputs,eps,theta=None):
+  def __init__(self,numNodes,numInputs,eps=0.1, theta=None):
     # numNodes both numInputs both includes bias node
-    self.nNodes = numNodes
+    self.nNodes  = numNodes
     self.nInputs = numInputs
+    self.eps     = eps
     if type(theta) == type(matrix(1)):
       # Check that passed theta is the correct size for the layer.
       # Number of rows in theta should be equal it number of nodes in layer.
@@ -17,15 +18,24 @@ class Layer:
       if(thetaSize[0] == numNodes and thetaSize[1] == numInputs):
         self.theta = theta
       else:
-        print "Hey fucker you gave me a matrix of the wrong size"
-        #randomInitialize(numNodes,numInputs,eps)
+        raise DimentionException("Hey fucker, your matrix is the wrong size")
     else:
       print "Random initialize"
-      #randomInitialize(eps)
+      randomInitialize(eps)
+
+  def randomInitialize(self):
+    self.theta = matrix(random.rand(numNodes, numInputs))
 
 
 ### Custom exception class for handling problems with architecture 
 class ArchitectureException(Exception):
+  def __init__(self, value):
+    self.value = value
+  def __str__(self):
+    return repr(self.value)
+
+### Custom exception class for handling problems with architecture 
+class DimentionException(Exception):
   def __init__(self, value):
     self.value = value
   def __str__(self):
@@ -49,7 +59,7 @@ class NeuralNetwork:
       if not type(nodeCount) == type(3):
         raise ArchitectureException("Invalid node count:" + str(nodeCount))
 
-      self.layers.append((inputCount, nodeCount))
+      self.layers.append(Layer(nodeCount, inputCount))
       # Input to next layer will be number of nodes in this layer
       inputCount = nodeCount
 
